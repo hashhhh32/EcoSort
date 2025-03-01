@@ -5,6 +5,7 @@ import { LucideLeaf, Recycle, MapPin, Trophy, AlertTriangle, UserCircle, LogIn, 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginScreen from "@/components/auth/LoginScreen";
+
 const Index = () => {
   const [isLocalLoading, setIsLocalLoading] = useState(true);
   const {
@@ -12,26 +13,32 @@ const Index = () => {
     loading,
     signOut
   } = useAuth();
+
   useEffect(() => {
     if (!loading) {
       setIsLocalLoading(false);
     }
   }, [loading]);
+
   const handleLogin = () => {
     // This function is now just a pass-through for the UI state
     // The actual login is handled by the AuthContext
   };
+
   const handleLogout = async () => {
     await signOut();
   };
+
   if (isLocalLoading) {
     return <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>;
   }
+
   if (!user) {
     return <LoginScreen onLogin={handleLogin} />;
   }
+
   return <div className="min-h-screen bg-background flex flex-col">
       <header className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/90 z-0"></div>
@@ -59,11 +66,13 @@ const Index = () => {
         <div className="h-8 bg-gradient-to-b from-primary/10 to-transparent"></div>
       </header>
 
-      <main className="flex-1 container mx-auto p-4 bg-emerald-50 rounded-lg">
+      <main className="flex-1 container mx-auto p-4 bg-emerald-50 rounded-lg mb-16">
         <section className="mb-8 animate-enter">
-          <div className="glass dark:glass-dark p-6 rounded-lg">
-            <h2 className="text-2xl font-bold mb-2">Welcome to EcoTrack</h2>
-            <p className="text-muted-foreground">Your partner in sustainable waste management</p>
+          <div className="glass dark:glass-dark p-6 rounded-lg bg-[url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')] bg-cover bg-center">
+            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg">
+              <h2 className="text-2xl font-bold mb-2">Welcome to EcoTrack</h2>
+              <p className="text-muted-foreground">Your partner in sustainable waste management</p>
+            </div>
           </div>
         </section>
 
@@ -71,11 +80,13 @@ const Index = () => {
           <h2 className="text-xl font-bold mb-4">Sustainable Waste Management</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden shadow-md hover:shadow-lg transition-shadow">
               <div className="relative h-48 bg-eco-backdrop">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Image className="w-24 h-24 text-eco-leaf opacity-30" />
-                </div>
+                <img 
+                  src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                  alt="Waste Segregation" 
+                  className="w-full h-full object-cover"
+                />
                 <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
                   <h3 className="text-lg font-medium text-white">Waste Segregation</h3>
                   <p className="text-sm text-white/80">Learn proper segregation techniques</p>
@@ -92,11 +103,13 @@ const Index = () => {
               </CardContent>
             </Card>
             
-            <Card className="overflow-hidden">
+            <Card className="overflow-hidden shadow-md hover:shadow-lg transition-shadow">
               <div className="relative h-48 bg-eco-backdrop">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <MapPin className="w-24 h-24 text-eco-plastic opacity-30" />
-                </div>
+                <img 
+                  src="https://images.unsplash.com/photo-1528323273322-d81458248d40?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+                  alt="Waste Collection" 
+                  className="w-full h-full object-cover"
+                />
                 <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
                   <h3 className="text-lg font-medium text-white">Waste Collection</h3>
                   <p className="text-sm text-white/80">Schedule and track waste pickup</p>
@@ -199,7 +212,7 @@ const Index = () => {
         </section>
       </main>
 
-      <nav className="bg-background border-t border-border py-2">
+      <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border py-2 z-50 shadow-lg">
         <div className="container mx-auto">
           <ul className="flex justify-around">
             <NavItem icon={<LucideLeaf />} label="Home" isActive />
@@ -212,6 +225,7 @@ const Index = () => {
       </nav>
     </div>;
 };
+
 const WasteTypeCard = ({
   type,
   color
@@ -224,6 +238,7 @@ const WasteTypeCard = ({
       <span>{type}</span>
     </div>;
 };
+
 const CollectionItem = ({
   day,
   type,
@@ -241,6 +256,7 @@ const CollectionItem = ({
       <div className="text-sm">{time}</div>
     </div>;
 };
+
 const NavItem = ({
   icon,
   label,
@@ -259,4 +275,5 @@ const NavItem = ({
       </button>
     </li>;
 };
+
 export default Index;
