@@ -97,7 +97,7 @@ export function WasteImageClassifier() {
       const model = await tf.loadLayersModel('https://storage.googleapis.com/tfjs-models/tfjs/mobilenet_v1_0.25_224/model.json');
       
       // Prepare the image
-      const img = new Image();
+      const img = document.createElement('img');
       img.src = imageUrl;
       await new Promise(resolve => { img.onload = resolve; });
       
