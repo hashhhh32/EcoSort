@@ -1,18 +1,39 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LucideLeaf, Recycle, MapPin, Trophy, AlertTriangle, UserCircle, LogIn, Image, Trash } from "lucide-react";
-import { useState } from "react";
+import { LucideLeaf, Recycle, MapPin, Trophy, AlertTriangle, UserCircle, LogIn, Image, Trash, LogOut } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import LoginScreen from "@/components/auth/LoginScreen";
 
 const Index = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLocalLoading, setIsLocalLoading] = useState(true);
+  const { user, loading, signOut } = useAuth();
+
+  useEffect(() => {
+    if (!loading) {
+      setIsLocalLoading(false);
+    }
+  }, [loading]);
 
   const handleLogin = () => {
-    setIsLoggedIn(true);
+    // This function is now just a pass-through for the UI state
+    // The actual login is handled by the AuthContext
   };
 
-  if (!isLoggedIn) {
+  const handleLogout = async () => {
+    await signOut();
+  };
+
+  if (isLocalLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
     return <LoginScreen onLogin={handleLogin} />;
   }
 
@@ -32,9 +53,19 @@ const Index = () => {
                 <p className="text-xs text-white/80">Sustainable waste management</p>
               </div>
             </div>
-            <Button variant="outline" size="icon" className="rounded-full border-white/30 bg-white/20 backdrop-blur-sm hover:bg-white/30">
-              <UserCircle className="h-5 w-5 text-white" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-white/90 mr-2">
+                {user.email?.split('@')[0] || 'User'}
+              </span>
+              <Button 
+                variant="outline" 
+                size="icon" 
+                className="rounded-full border-white/30 bg-white/20 backdrop-blur-sm hover:bg-white/30"
+                onClick={handleLogout}
+              >
+                <LogOut className="h-5 w-5 text-white" />
+              </Button>
+            </div>
           </div>
         </div>
         <div className="h-8 bg-gradient-to-b from-primary/10 to-transparent"></div>
