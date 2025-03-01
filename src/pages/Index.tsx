@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -237,51 +238,6 @@ const Index = () => {
           </ul>
         </div>
       </nav>
-    </div>
-  );
-};
-
-// Component for login screen
-const LoginScreen = ({ onLogin }: { onLogin: () => void }) => {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="mx-auto mb-4 bg-primary text-primary-foreground p-3 rounded-full inline-flex">
-            <LucideLeaf className="h-8 w-8" />
-          </div>
-          <CardTitle className="text-2xl">Welcome to EcoTrack</CardTitle>
-          <CardDescription>Your sustainable waste management companion</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">Email</label>
-              <input
-                id="email"
-                type="email"
-                placeholder="Enter your email"
-                className="w-full p-2 border border-input rounded-md"
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">Password</label>
-              <input
-                id="password"
-                type="password"
-                placeholder="Enter your password"
-                className="w-full p-2 border border-input rounded-md"
-              />
-            </div>
-            <Button className="w-full" onClick={onLogin}>
-              <LogIn className="mr-2 h-4 w-4" /> Sign In
-            </Button>
-            <div className="text-center text-sm text-muted-foreground mt-4">
-              <p>Don't have an account? <span className="text-primary cursor-pointer">Sign up</span></p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 };
