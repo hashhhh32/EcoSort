@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LucideLeaf, Recycle, MapPin, Trophy, AlertTriangle, UserCircle, LogIn } from "lucide-react";
+import { LucideLeaf, Recycle, MapPin, Trophy, AlertTriangle, UserCircle, LogIn, Image, Trash } from "lucide-react";
 import { useState } from "react";
 
 const Index = () => {
@@ -18,17 +18,26 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
-      <header className="p-4 bg-primary text-primary-foreground shadow-md">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <LucideLeaf className="h-6 w-6" />
-            <h1 className="text-xl font-bold">EcoTrack</h1>
+      {/* Enhanced Header */}
+      <header className="relative">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/90 z-0"></div>
+        <div className="relative z-10 p-6">
+          <div className="container mx-auto flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-white/20 backdrop-blur-sm rounded-full">
+                <LucideLeaf className="h-7 w-7 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-white">EcoTrack</h1>
+                <p className="text-xs text-white/80">Sustainable waste management</p>
+              </div>
+            </div>
+            <Button variant="outline" size="icon" className="rounded-full border-white/30 bg-white/20 backdrop-blur-sm hover:bg-white/30">
+              <UserCircle className="h-5 w-5 text-white" />
+            </Button>
           </div>
-          <Button variant="outline" size="icon" className="rounded-full">
-            <UserCircle className="h-5 w-5" />
-          </Button>
         </div>
+        <div className="h-8 bg-gradient-to-b from-primary/10 to-transparent"></div>
       </header>
 
       {/* Main Content */}
@@ -40,29 +49,52 @@ const Index = () => {
           </div>
         </section>
 
+        {/* Feature Highlight Section (replacing quick actions) */}
         <section className="mb-8 animate-enter delay-100">
-          <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <QuickActionCard 
-              title="Segregate" 
-              icon={<Recycle className="h-8 w-8 text-eco-leaf" />} 
-              description="Learn how to sort waste"
-            />
-            <QuickActionCard 
-              title="Collect" 
-              icon={<Recycle className="h-8 w-8 text-eco-plastic" />} 
-              description="Schedule waste pickup"
-            />
-            <QuickActionCard 
-              title="Track" 
-              icon={<MapPin className="h-8 w-8 text-eco-metal" />} 
-              description="Find collection points"
-            />
-            <QuickActionCard 
-              title="Rewards" 
-              icon={<Trophy className="h-8 w-8 text-eco-paper" />} 
-              description="View your eco-points"
-            />
+          <h2 className="text-xl font-bold mb-4">Sustainable Waste Management</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Card className="overflow-hidden">
+              <div className="relative h-48 bg-eco-backdrop">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Image className="w-24 h-24 text-eco-leaf opacity-30" />
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+                  <h3 className="text-lg font-medium text-white">Waste Segregation</h3>
+                  <p className="text-sm text-white/80">Learn proper segregation techniques</p>
+                </div>
+              </div>
+              <CardContent className="p-4">
+                <p className="text-sm">
+                  Proper waste segregation is crucial for effective recycling. Learn how to separate waste into 
+                  recyclables, organic waste, and other categories to minimize environmental impact.
+                </p>
+                <Button variant="outline" className="mt-4 w-full">
+                  <Recycle className="mr-2 h-4 w-4 text-eco-leaf" /> View Segregation Guide
+                </Button>
+              </CardContent>
+            </Card>
+            
+            <Card className="overflow-hidden">
+              <div className="relative h-48 bg-eco-backdrop">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <MapPin className="w-24 h-24 text-eco-plastic opacity-30" />
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
+                  <h3 className="text-lg font-medium text-white">Waste Collection</h3>
+                  <p className="text-sm text-white/80">Schedule and track waste pickup</p>
+                </div>
+              </div>
+              <CardContent className="p-4">
+                <p className="text-sm">
+                  Our scheduled waste collection ensures timely pickup of segregated waste from your location.
+                  Track the collection vehicle in real-time and get notifications before arrival.
+                </p>
+                <Button variant="outline" className="mt-4 w-full">
+                  <MapPin className="mr-2 h-4 w-4 text-eco-plastic" /> View Collection Schedule
+                </Button>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
@@ -152,18 +184,23 @@ const Index = () => {
                   <div className="text-sm text-muted-foreground">Eco Points</div>
                 </div>
               </div>
+              <div className="mt-6 p-4 rounded-lg bg-muted text-center">
+                <p className="text-sm text-muted-foreground">You've helped save approximately</p>
+                <h4 className="text-lg font-semibold mb-1">23 kg of CO2 emissions</h4>
+                <p className="text-xs text-muted-foreground">equivalent to planting 2 trees</p>
+              </div>
             </CardContent>
           </Card>
         </section>
       </main>
 
-      {/* Bottom Navigation */}
+      {/* Updated Bottom Navigation */}
       <nav className="bg-background border-t border-border py-2">
         <div className="container mx-auto">
           <ul className="flex justify-around">
             <NavItem icon={<LucideLeaf />} label="Home" isActive />
             <NavItem icon={<Recycle />} label="Segregate" />
-            <NavItem icon={<MapPin />} label="Locate" />
+            <NavItem icon={<Trash />} label="Complaint" />
             <NavItem icon={<Trophy />} label="Rewards" />
             <NavItem icon={<UserCircle />} label="Profile" />
           </ul>
@@ -214,25 +251,6 @@ const LoginScreen = ({ onLogin }: { onLogin: () => void }) => {
           </div>
         </CardContent>
       </Card>
-    </div>
-  );
-};
-
-// Component for quick action cards
-const QuickActionCard = ({ 
-  title, 
-  icon, 
-  description 
-}: { 
-  title: string;
-  icon: React.ReactNode;
-  description: string;
-}) => {
-  return (
-    <div className="waste-card p-4 bg-card flex flex-col items-center text-center cursor-pointer">
-      <div className="mb-2">{icon}</div>
-      <h3 className="font-semibold">{title}</h3>
-      <p className="text-xs text-muted-foreground">{description}</p>
     </div>
   );
 };
