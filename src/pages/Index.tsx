@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,39 +8,47 @@ import LoginScreen from "@/components/auth/LoginScreen";
 import { useNavigate } from "react-router-dom";
 
 const Index = () => {
+  console.log("Index component: Rendering started");
   const [isLocalLoading, setIsLocalLoading] = useState(true);
   const {
     user,
     loading,
     signOut
   } = useAuth();
+  console.log("Index component: Auth state", { user: user ? "exists" : "null", loading });
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("Index component: useEffect triggered", { loading });
     if (!loading) {
       setIsLocalLoading(false);
     }
   }, [loading]);
 
   const handleLogin = () => {
+    console.log("Index component: handleLogin called");
     // This function is now just a pass-through for the UI state
     // The actual login is handled by the AuthContext
   };
 
   const handleLogout = async () => {
+    console.log("Index component: handleLogout called");
     await signOut();
   };
 
   if (isLocalLoading) {
+    console.log("Index component: Showing loading spinner");
     return <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
       </div>;
   }
 
   if (!user) {
+    console.log("Index component: Showing login screen");
     return <LoginScreen onLogin={handleLogin} />;
   }
 
+  console.log("Index component: Rendering main content");
   return <div className="min-h-screen bg-background flex flex-col">
       <header className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/90 z-0"></div>
@@ -282,15 +289,34 @@ const NavItem = ({
   isActive?: boolean;
   onClick?: () => void;
 }) => {
-  return <li className="flex flex-col items-center">
-      <button 
-        className={`p-2 rounded-full flex flex-col items-center transition-colors duration-300 ${isActive ? "text-primary" : "text-muted-foreground hover:text-primary"}`} 
-        onClick={onClick}
-      >
-        <div>{icon}</div>
-        <span className="text-xs mt-1">{label}</span>
-      </button>
-    </li>;
+  return <li>
+    <button 
+      onClick={onClick}
+      className={`flex flex-col items-center justify-center p-2 w-16 ${isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'}`}
+    >
+      <div className="mb-1">{icon}</div>
+      <span className="text-xs">{label}</span>
+    </button>
+  </li>;
 };
+
+// Define ArrowRight component as a fallback
+const ArrowRight = ({ className = "h-4 w-4" }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    width="24" 
+    height="24" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={className}
+  >
+    <path d="M5 12h14"></path>
+    <path d="m12 5 7 7-7 7"></path>
+  </svg>
+);
 
 export default Index;

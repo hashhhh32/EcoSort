@@ -1,4 +1,3 @@
-
 import React, { useState, useRef } from "react";
 import { 
   Card, 
@@ -151,7 +150,7 @@ const ComplaintPage = () => {
       toast({
         title: "Complaint submitted",
         description: "Thank you for reporting this issue. We'll look into it.",
-        variant: "success",
+        variant: "default",
       });
 
       // Navigate back to home

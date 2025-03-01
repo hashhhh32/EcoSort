@@ -1,4 +1,3 @@
-
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
@@ -23,16 +22,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
 
   useEffect(() => {
+    console.log("AuthProvider: Initializing auth state");
     // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log("AuthProvider: Initial session", session ? "exists" : "does not exist");
       setSession(session);
       setUser(session?.user ?? null);
+      setLoading(false);
+    }).catch(error => {
+      console.error("AuthProvider: Error getting session", error);
       setLoading(false);
     });
 
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (event, session) => {
+        console.log("AuthProvider: Auth state changed", event, session ? "session exists" : "no session");
         setSession(session);
         setUser(session?.user ?? null);
         setLoading(false);
