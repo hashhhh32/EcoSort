@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { LucideLeaf, LogIn } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/components/ui/use-toast";
 
 type LoginScreenProps = {
   onLogin: () => void;
@@ -17,14 +18,29 @@ const LoginScreen = ({ onLogin }: LoginScreenProps) => {
   const [isSignUp, setIsSignUp] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { signIn, signUp, signInWithGoogle } = useAuth();
+  const { toast } = useToast();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!email || !password) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Please enter both email and password",
+      });
+      return;
+    }
+    
     setIsLoading(true);
     
     try {
       if (isSignUp) {
         await signUp(email, password);
+        toast({
+          title: "Account created",
+          description: "Please check your email for verification",
+        });
       } else {
         await signIn(email, password);
         onLogin();
