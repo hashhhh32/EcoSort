@@ -5,40 +5,34 @@ import { LucideLeaf, Recycle, MapPin, Trophy, AlertTriangle, UserCircle, LogIn, 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginScreen from "@/components/auth/LoginScreen";
-
 const Index = () => {
   const [isLocalLoading, setIsLocalLoading] = useState(true);
-  const { user, loading, signOut } = useAuth();
-
+  const {
+    user,
+    loading,
+    signOut
+  } = useAuth();
   useEffect(() => {
     if (!loading) {
       setIsLocalLoading(false);
     }
   }, [loading]);
-
   const handleLogin = () => {
     // This function is now just a pass-through for the UI state
     // The actual login is handled by the AuthContext
   };
-
   const handleLogout = async () => {
     await signOut();
   };
-
   if (isLocalLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
+    return <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
-      </div>
-    );
+      </div>;
   }
-
   if (!user) {
     return <LoginScreen onLogin={handleLogin} />;
   }
-
-  return (
-    <div className="min-h-screen bg-background flex flex-col">
+  return <div className="min-h-screen bg-background flex flex-col">
       <header className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/90 z-0"></div>
         <div className="relative z-10 p-6">
@@ -56,12 +50,7 @@ const Index = () => {
               <span className="text-sm text-white/90 mr-2">
                 {user.email?.split('@')[0] || 'User'}
               </span>
-              <Button 
-                variant="outline" 
-                size="icon" 
-                className="rounded-full border-white/30 bg-white/20 backdrop-blur-sm hover:bg-white/30"
-                onClick={handleLogout}
-              >
+              <Button variant="outline" size="icon" className="rounded-full border-white/30 bg-white/20 backdrop-blur-sm hover:bg-white/30" onClick={handleLogout}>
                 <LogOut className="h-5 w-5 text-white" />
               </Button>
             </div>
@@ -70,7 +59,7 @@ const Index = () => {
         <div className="h-8 bg-gradient-to-b from-primary/10 to-transparent"></div>
       </header>
 
-      <main className="flex-1 container mx-auto p-4">
+      <main className="flex-1 container mx-auto p-4 bg-emerald-50 rounded-lg">
         <section className="mb-8 animate-enter">
           <div className="glass dark:glass-dark p-6 rounded-lg">
             <h2 className="text-2xl font-bold mb-2">Welcome to EcoTrack</h2>
@@ -97,11 +86,7 @@ const Index = () => {
                   Proper waste segregation is crucial for effective recycling. Learn how to separate waste into 
                   recyclables, organic waste, and other categories to minimize environmental impact.
                 </p>
-                <Button 
-                  variant="outline" 
-                  className="mt-4 w-full"
-                  onClick={() => window.location.href = "/waste-classification"}
-                >
+                <Button variant="outline" className="mt-4 w-full" onClick={() => window.location.href = "/waste-classification"}>
                   <Recycle className="mr-2 h-4 w-4 text-eco-leaf" /> Waste Classification
                 </Button>
               </CardContent>
@@ -161,21 +146,9 @@ const Index = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    <CollectionItem 
-                      day="Monday" 
-                      type="Recyclables" 
-                      time="8:00 AM - 12:00 PM" 
-                    />
-                    <CollectionItem 
-                      day="Wednesday" 
-                      type="Organic Waste" 
-                      time="8:00 AM - 12:00 PM" 
-                    />
-                    <CollectionItem 
-                      day="Friday" 
-                      type="General Waste" 
-                      time="1:00 PM - 5:00 PM" 
-                    />
+                    <CollectionItem day="Monday" type="Recyclables" time="8:00 AM - 12:00 PM" />
+                    <CollectionItem day="Wednesday" type="Organic Waste" time="8:00 AM - 12:00 PM" />
+                    <CollectionItem day="Friday" type="General Waste" time="1:00 PM - 5:00 PM" />
                   </div>
                 </CardContent>
               </Card>
@@ -230,74 +203,60 @@ const Index = () => {
         <div className="container mx-auto">
           <ul className="flex justify-around">
             <NavItem icon={<LucideLeaf />} label="Home" isActive />
-            <NavItem 
-              icon={<Recycle />} 
-              label="Segregate" 
-              onClick={() => window.location.href = "/waste-classification"}
-            />
+            <NavItem icon={<Recycle />} label="Segregate" onClick={() => window.location.href = "/waste-classification"} />
             <NavItem icon={<Trash />} label="Complaint" />
             <NavItem icon={<Trophy />} label="Rewards" />
             <NavItem icon={<UserCircle />} label="Profile" />
           </ul>
         </div>
       </nav>
-    </div>
-  );
+    </div>;
 };
-
-const WasteTypeCard = ({ type, color }: { type: string; color: string }) => {
-  return (
-    <div className="flex items-center p-3 rounded-md bg-card border border-border">
+const WasteTypeCard = ({
+  type,
+  color
+}: {
+  type: string;
+  color: string;
+}) => {
+  return <div className="flex items-center p-3 rounded-md bg-card border border-border">
       <div className={`w-4 h-4 rounded-full ${color} mr-3`}></div>
       <span>{type}</span>
-    </div>
-  );
+    </div>;
 };
-
-const CollectionItem = ({ 
-  day, 
-  type, 
-  time 
-}: { 
+const CollectionItem = ({
+  day,
+  type,
+  time
+}: {
   day: string;
   type: string;
   time: string;
 }) => {
-  return (
-    <div className="flex justify-between items-center p-3 border border-border rounded-md">
+  return <div className="flex justify-between items-center p-3 border border-border rounded-md">
       <div>
         <div className="font-medium">{day}</div>
         <div className="text-sm text-muted-foreground">{type}</div>
       </div>
       <div className="text-sm">{time}</div>
-    </div>
-  );
+    </div>;
 };
-
-const NavItem = ({ 
-  icon, 
-  label, 
+const NavItem = ({
+  icon,
+  label,
   isActive = false,
   onClick
-}: { 
+}: {
   icon: React.ReactNode;
   label: string;
   isActive?: boolean;
   onClick?: () => void;
 }) => {
-  return (
-    <li className="flex flex-col items-center">
-      <button 
-        className={`p-2 rounded-full flex flex-col items-center ${
-          isActive ? "text-primary" : "text-muted-foreground"
-        }`}
-        onClick={onClick}
-      >
+  return <li className="flex flex-col items-center">
+      <button className={`p-2 rounded-full flex flex-col items-center ${isActive ? "text-primary" : "text-muted-foreground"}`} onClick={onClick}>
         <div>{icon}</div>
         <span className="text-xs mt-1">{label}</span>
       </button>
-    </li>
-  );
+    </li>;
 };
-
 export default Index;
