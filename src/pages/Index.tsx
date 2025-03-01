@@ -1,3 +1,4 @@
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -5,6 +6,7 @@ import { LucideLeaf, Recycle, MapPin, Trophy, AlertTriangle, UserCircle, LogIn, 
 import { useState, useEffect } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import LoginScreen from "@/components/auth/LoginScreen";
+import { useNavigate } from "react-router-dom";
 
 const Index = () => {
   const [isLocalLoading, setIsLocalLoading] = useState(true);
@@ -13,6 +15,7 @@ const Index = () => {
     loading,
     signOut
   } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!loading) {
@@ -66,26 +69,29 @@ const Index = () => {
         <div className="h-8 bg-gradient-to-b from-primary/10 to-transparent"></div>
       </header>
 
-      <main className="flex-1 container mx-auto p-4 bg-emerald-50 rounded-lg mb-16">
+      <main className="flex-1 container mx-auto p-4 bg-emerald-50/50 rounded-lg mb-20 shadow-sm">
         <section className="mb-8 animate-enter">
-          <div className="glass dark:glass-dark p-6 rounded-lg bg-[url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')] bg-cover bg-center">
-            <div className="bg-white/80 backdrop-blur-sm p-6 rounded-lg">
-              <h2 className="text-2xl font-bold mb-2">Welcome to EcoTrack</h2>
+          <div className="glass dark:glass-dark p-6 rounded-lg bg-[url('https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80')] bg-cover bg-center hover:shadow-lg transition-all duration-300">
+            <div className="bg-white/90 backdrop-blur-sm p-6 rounded-lg shadow-sm">
+              <h2 className="text-2xl font-bold mb-2 text-primary">Welcome to EcoTrack</h2>
               <p className="text-muted-foreground">Your partner in sustainable waste management</p>
             </div>
           </div>
         </section>
 
         <section className="mb-8 animate-enter delay-100">
-          <h2 className="text-xl font-bold mb-4">Sustainable Waste Management</h2>
+          <h2 className="text-xl font-bold mb-4 text-primary flex items-center">
+            <Recycle className="mr-2 h-5 w-5" />
+            Sustainable Waste Management
+          </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Card className="overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+            <Card className="overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/30">
               <div className="relative h-48 bg-eco-backdrop">
                 <img 
                   src="https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
                   alt="Waste Segregation" 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover brightness-90 hover:brightness-100 transition-all duration-300"
                 />
                 <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
                   <h3 className="text-lg font-medium text-white">Waste Segregation</h3>
@@ -97,18 +103,20 @@ const Index = () => {
                   Proper waste segregation is crucial for effective recycling. Learn how to separate waste into 
                   recyclables, organic waste, and other categories to minimize environmental impact.
                 </p>
-                <Button variant="outline" className="mt-4 w-full" onClick={() => window.location.href = "/waste-classification"}>
-                  <Recycle className="mr-2 h-4 w-4 text-eco-leaf" /> Waste Classification
+                <Button variant="outline" className="mt-4 w-full group" onClick={() => navigate("/waste-classification")}>
+                  <Recycle className="mr-2 h-4 w-4 text-eco-leaf group-hover:text-primary transition-colors" /> 
+                  Waste Classification
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
                 </Button>
               </CardContent>
             </Card>
             
-            <Card className="overflow-hidden shadow-md hover:shadow-lg transition-shadow">
+            <Card className="overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/30">
               <div className="relative h-48 bg-eco-backdrop">
                 <img 
                   src="https://images.unsplash.com/photo-1528323273322-d81458248d40?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
                   alt="Waste Collection" 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover brightness-90 hover:brightness-100 transition-all duration-300"
                 />
                 <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/70 to-transparent">
                   <h3 className="text-lg font-medium text-white">Waste Collection</h3>
@@ -120,8 +128,10 @@ const Index = () => {
                   Our scheduled waste collection ensures timely pickup of segregated waste from your location.
                   Track the collection vehicle in real-time and get notifications before arrival.
                 </p>
-                <Button variant="outline" className="mt-4 w-full">
-                  <MapPin className="mr-2 h-4 w-4 text-eco-plastic" /> View Collection Schedule
+                <Button variant="outline" className="mt-4 w-full group">
+                  <MapPin className="mr-2 h-4 w-4 text-eco-plastic group-hover:text-primary transition-colors" /> 
+                  View Collection Schedule
+                  <ArrowRight className="ml-2 h-4 w-4 opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
                 </Button>
               </CardContent>
             </Card>
@@ -136,7 +146,7 @@ const Index = () => {
               <TabsTrigger value="reports">Reports</TabsTrigger>
             </TabsList>
             <TabsContent value="segregation">
-              <Card>
+              <Card className="border-2 hover:border-primary/30 transition-all duration-300">
                 <CardHeader>
                   <CardTitle>Waste Segregation Guide</CardTitle>
                   <CardDescription>Learn how to properly sort your waste</CardDescription>
@@ -152,7 +162,7 @@ const Index = () => {
               </Card>
             </TabsContent>
             <TabsContent value="collection">
-              <Card>
+              <Card className="border-2 hover:border-primary/30 transition-all duration-300">
                 <CardHeader>
                   <CardTitle>Waste Collection Schedule</CardTitle>
                   <CardDescription>Upcoming collection in your area</CardDescription>
@@ -167,13 +177,16 @@ const Index = () => {
               </Card>
             </TabsContent>
             <TabsContent value="reports">
-              <Card>
+              <Card className="border-2 hover:border-primary/30 transition-all duration-300">
                 <CardHeader>
                   <CardTitle>Report Waste Dump</CardTitle>
                   <CardDescription>Help us keep our environment clean</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button className="w-full mb-4 bg-destructive">
+                  <Button 
+                    className="w-full mb-4 bg-destructive hover:bg-destructive/90"
+                    onClick={() => navigate("/complaint")}
+                  >
                     <AlertTriangle className="mr-2 h-4 w-4" /> Report Illegal Dumping
                   </Button>
                   <div className="text-muted-foreground text-sm">
@@ -186,18 +199,18 @@ const Index = () => {
         </section>
 
         <section className="animate-enter delay-300">
-          <Card>
+          <Card className="border-2 hover:border-primary/30 transition-all duration-300">
             <CardHeader>
               <CardTitle>Your Eco Impact</CardTitle>
               <CardDescription>Track your contribution to a cleaner environment</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
-                <div className="text-center">
+                <div className="text-center p-4 bg-primary/10 rounded-lg">
                   <div className="text-3xl font-bold text-primary">127 kg</div>
                   <div className="text-sm text-muted-foreground">Waste Recycled</div>
                 </div>
-                <div className="text-center">
+                <div className="text-center p-4 bg-secondary/10 rounded-lg">
                   <div className="text-3xl font-bold text-secondary">350</div>
                   <div className="text-sm text-muted-foreground">Eco Points</div>
                 </div>
@@ -212,12 +225,13 @@ const Index = () => {
         </section>
       </main>
 
+      {/* Fixed nav bar with proper z-index */}
       <nav className="fixed bottom-0 left-0 right-0 bg-background border-t border-border py-2 z-50 shadow-lg">
         <div className="container mx-auto">
           <ul className="flex justify-around">
             <NavItem icon={<LucideLeaf />} label="Home" isActive />
-            <NavItem icon={<Recycle />} label="Segregate" onClick={() => window.location.href = "/waste-classification"} />
-            <NavItem icon={<Trash />} label="Complaint" />
+            <NavItem icon={<Recycle />} label="Segregate" onClick={() => navigate("/waste-classification")} />
+            <NavItem icon={<Trash />} label="Complaint" onClick={() => navigate("/complaint")} />
             <NavItem icon={<Trophy />} label="Rewards" />
             <NavItem icon={<UserCircle />} label="Profile" />
           </ul>
@@ -233,7 +247,7 @@ const WasteTypeCard = ({
   type: string;
   color: string;
 }) => {
-  return <div className="flex items-center p-3 rounded-md bg-card border border-border">
+  return <div className="flex items-center p-3 rounded-md bg-card border border-border hover:shadow-md transition-all duration-300">
       <div className={`w-4 h-4 rounded-full ${color} mr-3`}></div>
       <span>{type}</span>
     </div>;
@@ -248,7 +262,7 @@ const CollectionItem = ({
   type: string;
   time: string;
 }) => {
-  return <div className="flex justify-between items-center p-3 border border-border rounded-md">
+  return <div className="flex justify-between items-center p-3 border border-border rounded-md hover:shadow-sm transition-all duration-300 hover:bg-muted/30">
       <div>
         <div className="font-medium">{day}</div>
         <div className="text-sm text-muted-foreground">{type}</div>
@@ -269,7 +283,10 @@ const NavItem = ({
   onClick?: () => void;
 }) => {
   return <li className="flex flex-col items-center">
-      <button className={`p-2 rounded-full flex flex-col items-center ${isActive ? "text-primary" : "text-muted-foreground"}`} onClick={onClick}>
+      <button 
+        className={`p-2 rounded-full flex flex-col items-center transition-colors duration-300 ${isActive ? "text-primary" : "text-muted-foreground hover:text-primary"}`} 
+        onClick={onClick}
+      >
         <div>{icon}</div>
         <span className="text-xs mt-1">{label}</span>
       </button>
