@@ -1,4 +1,3 @@
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -40,7 +39,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Enhanced Header */}
       <header className="relative">
         <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-secondary/90 z-0"></div>
         <div className="relative z-10 p-6">
@@ -72,7 +70,6 @@ const Index = () => {
         <div className="h-8 bg-gradient-to-b from-primary/10 to-transparent"></div>
       </header>
 
-      {/* Main Content */}
       <main className="flex-1 container mx-auto p-4">
         <section className="mb-8 animate-enter">
           <div className="glass dark:glass-dark p-6 rounded-lg">
@@ -81,7 +78,6 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Feature Highlight Section (replacing quick actions) */}
         <section className="mb-8 animate-enter delay-100">
           <h2 className="text-xl font-bold mb-4">Sustainable Waste Management</h2>
           
@@ -101,8 +97,12 @@ const Index = () => {
                   Proper waste segregation is crucial for effective recycling. Learn how to separate waste into 
                   recyclables, organic waste, and other categories to minimize environmental impact.
                 </p>
-                <Button variant="outline" className="mt-4 w-full">
-                  <Recycle className="mr-2 h-4 w-4 text-eco-leaf" /> View Segregation Guide
+                <Button 
+                  variant="outline" 
+                  className="mt-4 w-full"
+                  onClick={() => window.location.href = "/waste-classification"}
+                >
+                  <Recycle className="mr-2 h-4 w-4 text-eco-leaf" /> Waste Classification
                 </Button>
               </CardContent>
             </Card>
@@ -226,12 +226,15 @@ const Index = () => {
         </section>
       </main>
 
-      {/* Updated Bottom Navigation */}
       <nav className="bg-background border-t border-border py-2">
         <div className="container mx-auto">
           <ul className="flex justify-around">
             <NavItem icon={<LucideLeaf />} label="Home" isActive />
-            <NavItem icon={<Recycle />} label="Segregate" />
+            <NavItem 
+              icon={<Recycle />} 
+              label="Segregate" 
+              onClick={() => window.location.href = "/waste-classification"}
+            />
             <NavItem icon={<Trash />} label="Complaint" />
             <NavItem icon={<Trophy />} label="Rewards" />
             <NavItem icon={<UserCircle />} label="Profile" />
@@ -242,7 +245,6 @@ const Index = () => {
   );
 };
 
-// Component for waste type cards
 const WasteTypeCard = ({ type, color }: { type: string; color: string }) => {
   return (
     <div className="flex items-center p-3 rounded-md bg-card border border-border">
@@ -252,7 +254,6 @@ const WasteTypeCard = ({ type, color }: { type: string; color: string }) => {
   );
 };
 
-// Component for collection schedule items
 const CollectionItem = ({ 
   day, 
   type, 
@@ -273,15 +274,16 @@ const CollectionItem = ({
   );
 };
 
-// Component for navigation items
 const NavItem = ({ 
   icon, 
   label, 
-  isActive = false 
+  isActive = false,
+  onClick
 }: { 
   icon: React.ReactNode;
   label: string;
   isActive?: boolean;
+  onClick?: () => void;
 }) => {
   return (
     <li className="flex flex-col items-center">
@@ -289,6 +291,7 @@ const NavItem = ({
         className={`p-2 rounded-full flex flex-col items-center ${
           isActive ? "text-primary" : "text-muted-foreground"
         }`}
+        onClick={onClick}
       >
         <div>{icon}</div>
         <span className="text-xs mt-1">{label}</span>
