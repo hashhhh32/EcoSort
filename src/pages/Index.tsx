@@ -240,7 +240,7 @@ const Index = () => {
             <NavItem icon={<Recycle />} label="Segregate" onClick={() => navigate("/waste-classification")} />
             <NavItem icon={<Trash />} label="Complaint" onClick={() => navigate("/complaint")} />
             <NavItem icon={<Trophy />} label="Rewards" />
-            <NavItem icon={<UserCircle />} label="Profile" />
+            <NavItem icon={<UserCircle />} label="Profile" onClick={() => navigate("/profile")} />
           </ul>
         </div>
       </nav>
