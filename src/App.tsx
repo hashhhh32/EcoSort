@@ -7,6 +7,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import { Toaster } from "./components/ui/toaster";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 import { useEffect } from "react";
+import ComplaintDetail from "@/pages/ComplaintDetail";
 
 // Admin route guard component
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
@@ -51,6 +52,11 @@ function App() {
             </AdminRoute>
           } 
         />
+        <Route path="/admin/complaint/:id" element={
+          <AdminRoute>
+            <ComplaintDetail />
+          </AdminRoute>
+        } />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster />
