@@ -1,6 +1,6 @@
-
 import React, { useState, useEffect } from "react";
 import * as tf from '@tensorflow/tfjs';
+import * as mobilenet from '@tensorflow-models/mobilenet';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { 
@@ -12,12 +12,24 @@ import { toast } from "@/hooks/use-toast";
 
 // Map ImageNet classes to waste categories
 const wasteCategories = {
-  'plastic': ['bottle', 'plastic', 'container', 'cup', 'box'],
-  'paper': ['paper', 'newspaper', 'book', 'cardboard', 'carton', 'envelope'],
-  'glass': ['glass', 'bottle', 'jar', 'wine glass', 'beer glass'],
-  'metal': ['can', 'aluminum', 'tin', 'metal', 'knife', 'fork', 'spoon'],
-  'organic': ['fruit', 'vegetable', 'food', 'plant', 'leaf', 'coffee', 'tea'],
-  'electronic': ['computer', 'phone', 'laptop', 'electronic', 'battery', 'calculator'],
+  'plastic': ['bottle', 'plastic', 'container', 'cup', 'box', 'packaging'],
+  'paper': ['paper', 'newspaper', 'book', 'cardboard', 'carton', 'envelope', 'magazine'],
+  'glass': ['glass', 'bottle', 'jar', 'wine glass', 'beer glass', 'vase'],
+  'metal': ['can', 'aluminum', 'tin', 'metal', 'knife', 'fork', 'spoon', 'steel'],
+  'organic': [
+    // Foods and ingredients
+    'fruit', 'vegetable', 'food', 'plant', 'leaf', 'coffee', 'tea',
+    'nut', 'seed', 'bean', 'chestnut', 'buckeye', 'conker', 'acorn',
+    'apple', 'orange', 'banana', 'grape', 'berry', 'corn', 'wheat',
+    'mushroom', 'herb', 'spice', 'root', 'shell', 'peel',
+    // Natural materials
+    'garden', 'grass', 'flower', 'wood', 'bark', 'branch',
+    'compost', 'organic', 'biodegradable'
+  ],
+  'electronic': [
+    'computer', 'phone', 'laptop', 'electronic', 'battery', 'calculator',
+    'device', 'charger', 'adapter', 'cable', 'screen', 'monitor'
+  ],
   'others': [],
 };
 
@@ -26,60 +38,24 @@ export const WasteImageClassifier = () => {
   const [prediction, setPrediction] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [model, setModel] = useState<tf.LayersModel | null>(null);
+  const [model, setModel] = useState<mobilenet.MobileNet | null>(null);
   const [wasteCategory, setWasteCategory] = useState<string | null>(null);
   const [modelTraining, setModelTraining] = useState(false);
   const [trainingProgress, setTrainingProgress] = useState(0);
 
   useEffect(() => {
-    // Load the model when component mounts
     loadModel();
   }, []);
 
   const loadModel = async () => {
     try {
       setLoading(true);
-      
-      // First, try to load from IndexedDB
-      try {
-        const savedModel = await tf.loadLayersModel('indexeddb://waste-classification-model');
-        setModel(savedModel);
-        console.log("Loaded saved model from IndexedDB");
-        setLoading(false);
-        return;
-      } catch (e) {
-        console.log("No saved model found, loading MobileNet...");
-      }
-      
-      // If no saved model, use MobileNetV2 - Fixed the URL
       await tf.ready();
-      
-      // Use a different approach with tfjs-models model
-      const mobilenetModel = await tf.loadGraphModel(
-        'https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v2_100_224/classification/3/default/1', 
-        { fromTFHub: true }
-      );
-      
-      // Create a custom model for waste classification
-      const wasteModel = tf.sequential();
-      wasteModel.add(tf.layers.dense({
-        inputShape: [1001], // MobileNet output size
-        units: 128,
-        activation: 'relu'
-      }));
-      wasteModel.add(tf.layers.dropout({ rate: 0.5 }));
-      wasteModel.add(tf.layers.dense({
-        units: Object.keys(wasteCategories).length,
-        activation: 'softmax'
-      }));
-      
-      wasteModel.compile({
-        optimizer: 'adam',
-        loss: 'categoricalCrossentropy',
-        metrics: ['accuracy']
+      const net = await mobilenet.load({
+        version: 2,
+        alpha: 1.0,
       });
-      
-      setModel(wasteModel);
+      setModel(net);
       toast({
         title: "Model loaded successfully",
         description: "You can now classify waste items",
@@ -88,10 +64,10 @@ export const WasteImageClassifier = () => {
       setLoading(false);
     } catch (err) {
       console.error("Error loading model:", err);
-      setError("Failed to load the classification model");
+      setError("Failed to load the classification model. Please check your internet connection and try again.");
       toast({
         title: "Model loading failed",
-        description: "Please try training the model manually",
+        description: "Please check your internet connection and try again",
         variant: "destructive",
       });
       setLoading(false);
@@ -180,7 +156,7 @@ export const WasteImageClassifier = () => {
       setLoading(true);
       setError(null);
       
-      // Create an image element - Fixed image creation
+      // Create an image element
       const img = document.createElement('img');
       img.crossOrigin = 'anonymous';
       img.width = 224;
@@ -193,33 +169,31 @@ export const WasteImageClassifier = () => {
         img.onerror = reject;
       });
       
-      // Pre-process the image
-      const tfImg = tf.browser.fromPixels(img)
-        .resizeNearestNeighbor([224, 224])
-        .toFloat()
-        .div(tf.scalar(255))
-        .expandDims();
+      // Get predictions from MobileNet
+      const predictions = await model.classify(img, 5); // Increased to top 5 predictions
       
-      // Make prediction using MobileNet
-      const predictions = await model.predict(tfImg);
-      const result = await (predictions as tf.Tensor).data();
+      // Try to find a waste category from any of the top predictions
+      let category = 'others';
+      let matchedPrediction = predictions[0];
       
-      // Find the class with the highest probability
-      const classIndex = result.indexOf(Math.max(...Array.from(result)));
-      const className = IMAGENET_CLASSES[classIndex] || 'Unknown item';
-      
-      // Find the waste category
-      const category = determineWasteCategory(className);
+      for (const prediction of predictions) {
+        const possibleCategory = determineWasteCategory(prediction.className);
+        if (possibleCategory !== 'others') {
+          category = possibleCategory;
+          matchedPrediction = prediction;
+          break;
+        }
+      }
       
       // Display the result
       setPrediction({
-        className: className,
-        probability: Math.max(...Array.from(result))
+        className: matchedPrediction.className,
+        probability: matchedPrediction.probability
       });
       setWasteCategory(category);
       toast({
         title: `Classified as ${category}`,
-        description: `Item detected: ${className}`,
+        description: `Item detected: ${matchedPrediction.className}`,
       });
       setLoading(false);
     } catch (err) {
@@ -227,7 +201,7 @@ export const WasteImageClassifier = () => {
       setError("Error classifying the image. Please try again.");
       toast({
         title: "Classification failed",
-        description: "Please try again or train the model",
+        description: "Please try again",
         variant: "destructive",
       });
       setLoading(false);
@@ -237,10 +211,19 @@ export const WasteImageClassifier = () => {
   const determineWasteCategory = (className: string): string => {
     const lowerClassName = className.toLowerCase();
     
+    // Check each category's keywords
     for (const [category, keywords] of Object.entries(wasteCategories)) {
-      for (const keyword of keywords) {
-        if (lowerClassName.includes(keyword)) {
-          return category;
+      // Check if any keyword is present in the class name
+      if (keywords.some(keyword => lowerClassName.includes(keyword))) {
+        return category;
+      }
+      
+      // Additional check for organic category - if it looks like a food item
+      if (category === 'organic') {
+        // Common food-related suffixes and terms
+        const foodIndicators = ['nut', 'fruit', 'berry', 'food', 'seed', 'vegetable', 'edible'];
+        if (foodIndicators.some(indicator => lowerClassName.endsWith(indicator))) {
+          return 'organic';
         }
       }
     }
