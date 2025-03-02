@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Camera, Image as ImageIcon, Upload, CheckCircle2, Loader, MapPin } from "lucide-react";
+import { ArrowLeft, Camera, Image as ImageIcon, Upload, CheckCircle2, Loader, AlertCircle, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "@/hooks/use-toast";
@@ -23,18 +23,55 @@ const ComplaintPage = () => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [description, setDescription] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [errorDetails, setErrorDetails] = useState<string | null>(null);
+  const [authStatus, setAuthStatus] = useState<string>("Checking...");
+  const [locationStatus, setLocationStatus] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Check if location services are available
+  // Check authentication status on mount
   useEffect(() => {
-    if (!navigator.geolocation) {
-      toast({
-        title: "Location services unavailable",
-        description: "Your browser does not support location services, which are required for submitting complaints.",
-        variant: "destructive",
-      });
+    const checkAuth = async () => {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error("Auth error:", error);
+          setAuthStatus(`Auth error: ${error.message}`);
+          return;
+        }
+        
+        if (data?.session) {
+          setAuthStatus(`Authenticated as: ${data.session.user.id}`);
+        } else {
+          setAuthStatus("Not authenticated");
+        }
+        
+        // Also check if we can list buckets
+        const { data: buckets, error: bucketsError } = await supabase.storage.listBuckets();
+        
+        if (bucketsError) {
+          console.error("Buckets error:", bucketsError);
+          setErrorDetails(`Buckets error: ${bucketsError.message}`);
+        } else {
+          console.log("Available buckets:", buckets);
+          const bucketNames = buckets.map(b => b.name).join(", ");
+          setErrorDetails(`Available buckets: ${bucketNames || "none"}`);
+        }
+      } catch (err) {
+        console.error("Error checking auth:", err);
+        setAuthStatus(`Error: ${err.message}`);
+      }
+    };
+    
+    checkAuth();
+    
+    // Check if location services are available
+    if (navigator.geolocation) {
+      setLocationStatus("Location services available");
+    } else {
+      setLocationStatus("Location services not available");
     }
   }, []);
 
@@ -189,6 +226,7 @@ const ComplaintPage = () => {
     }
   
     setSubmitting(true);
+    setErrorDetails(null);
   
     try {
       // First, try to create a test file to check permissions
@@ -202,6 +240,7 @@ const ComplaintPage = () => {
       
       if (testError) {
         console.error("Test upload error:", testError);
+        setErrorDetails(`Test upload error: ${JSON.stringify(testError)}`);
         
         // If the error is about RLS policies, we need to add them
         if (testError.message.includes("row-level security") || 
@@ -244,6 +283,7 @@ const ComplaintPage = () => {
   
       if (uploadError) {
         console.error("Upload error:", uploadError);
+        setErrorDetails(`Upload error: ${JSON.stringify(uploadError)}`);
         throw new Error(`Error uploading image: ${uploadError.message}`);
       }
   
@@ -262,6 +302,7 @@ const ComplaintPage = () => {
   
       if (insertError) {
         console.error("Insert error:", insertError);
+        setErrorDetails(`Insert error: ${JSON.stringify(insertError)}`);
         throw new Error(`Error saving complaint details: ${insertError.message}`);
       }
   
@@ -304,6 +345,28 @@ const ComplaintPage = () => {
       </header>
       
       <main className="flex-1 container mx-auto p-4">
+        <Card className="mb-6 border-2 border-blue-300 bg-blue-50 shadow-md">
+          <CardHeader className="pb-2">
+            <CardTitle className="flex items-center text-blue-700">
+              <AlertCircle className="mr-2 h-5 w-5" />
+              Debug Information
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-blue-700">
+              <strong>Auth Status:</strong> {authStatus}
+            </p>
+            <p className="text-blue-700 mt-1">
+              <strong>Location Status:</strong> {locationStatus}
+            </p>
+            {errorDetails && (
+              <div className="mt-2 p-2 bg-blue-100 border border-blue-200 rounded-md text-sm text-blue-800">
+                <pre className="whitespace-pre-wrap">{errorDetails}</pre>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         <Card className="mb-6 border-2 hover:border-primary/30 transition-all duration-300 shadow-md">
           <CardHeader>
             <CardTitle className="flex items-center">

@@ -13,7 +13,8 @@ const Index = () => {
   const {
     user,
     loading,
-    signOut
+    signOut,
+    isAdmin
   } = useAuth();
   console.log("Index component: Auth state", { user: user ? "exists" : "null", loading });
   const navigate = useNavigate();
@@ -64,6 +65,16 @@ const Index = () => {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              {isAdmin && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={() => navigate('/admin')}
+                  className="mr-2"
+                >
+                  Admin Dashboard
+                </Button>
+              )}
               <span className="text-sm text-white/90 mr-2">
                 {user.email?.split('@')[0] || 'User'}
               </span>

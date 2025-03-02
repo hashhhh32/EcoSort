@@ -1,69 +1,84 @@
-# Welcome to your Lovable project
+# EcoTrack - Sustainable Waste Management App
 
-## Project info
+EcoTrack is a web application designed to help users manage waste sustainably, report illegal waste dumps, and track their environmental impact.
 
-**URL**: https://lovable.dev/projects/f4a862ac-d3ae-4c0c-b4f4-9b9ca258b481
+## Features
 
-## How can I edit this code?
+- **User Authentication**: Secure login and registration system
+- **Waste Classification**: Learn how to properly segregate waste
+- **Complaint Reporting**: Report illegal waste dumps with photo evidence and location
+- **Admin Dashboard**: Admin-specific section for managing the application
+  - **Overview**: View statistics and recent activity
+  - **Complaints Management**: Review and respond to user complaints
+  - **User Management**: View and manage user accounts
+  - **Admin Settings**: Configure admin preferences and access
 
-There are several ways of editing your application.
+## Admin Access
 
-**Use Lovable**
+The admin section is accessible only to users with admin privileges. Admin status is determined by the user's email address. Currently, the following email is configured as an admin:
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f4a862ac-d3ae-4c0c-b4f4-9b9ca258b481) and start prompting.
+- admin@ecotrack.com
 
-Changes made via Lovable will be committed automatically to this repo.
+To access the admin dashboard:
+1. Log in with an admin account
+2. Click on the "Admin Dashboard" button in the header
+3. Use the admin dashboard to manage complaints, users, and settings
 
-**Use your preferred IDE**
+## Tech Stack
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- React with TypeScript
+- Tailwind CSS for styling
+- Supabase for backend and authentication
+- React Router for navigation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## Getting Started
 
-Follow these steps:
+### Prerequisites
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- Node.js (v14 or higher)
+- npm or yarn
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+### Installation
 
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+1. Clone the repository
+```bash
+git clone https://github.com/yourusername/eco-friendly-navigator.git
+cd eco-friendly-navigator
 ```
 
-**Edit a file directly in GitHub**
+2. Install dependencies
+```bash
+npm install
+# or
+yarn install
+```
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+3. Start the development server
+```bash
+npm run dev
+# or
+yarn dev
+```
 
-**Use GitHub Codespaces**
+4. Open your browser and navigate to `http://localhost:5173`
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Project Structure
 
-## What technologies are used for this project?
+- `/src`: Source code
+  - `/components`: Reusable UI components
+    - `/admin`: Admin-specific components
+    - `/auth`: Authentication components
+    - `/ui`: UI components
+  - `/contexts`: React contexts
+  - `/hooks`: Custom React hooks
+  - `/lib`: Utility functions and libraries
+  - `/pages`: Page components
 
-This project is built with .
+## License
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-## How can I deploy this project?
+## Acknowledgments
 
-Simply open [Lovable](https://lovable.dev/projects/f4a862ac-d3ae-4c0c-b4f4-9b9ca258b481) and click on Share -> Publish.
-
-## I want to use a custom domain - is that possible?
-
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+- Icons from Lucide React
+- UI components from shadcn/ui

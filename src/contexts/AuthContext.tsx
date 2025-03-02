@@ -3,10 +3,14 @@ import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/lib/supabase';
 import { useToast } from '@/components/ui/use-toast';
 
+// List of admin email addresses
+const ADMIN_EMAILS = ['admin@ecotrack.com'];
+
 type AuthContextType = {
   session: Session | null;
   user: User | null;
   loading: boolean;
+  isAdmin: boolean;
   signUp: (email: string, password: string) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
@@ -19,7 +23,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const { toast } = useToast();
+
+  // Check if the current user is an admin
+  const checkAdminStatus = (user: User | null) => {
+    if (!user) return false;
+    return ADMIN_EMAILS.includes(user.email || '');
+  };
 
   useEffect(() => {
     console.log("AuthProvider: Initializing auth state");
@@ -28,6 +39,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       console.log("AuthProvider: Initial session", session ? "exists" : "does not exist");
       setSession(session);
       setUser(session?.user ?? null);
+      setIsAdmin(checkAdminStatus(session?.user ?? null));
       setLoading(false);
     }).catch(error => {
       console.error("AuthProvider: Error getting session", error);
@@ -40,6 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.log("AuthProvider: Auth state changed", event, session ? "session exists" : "no session");
         setSession(session);
         setUser(session?.user ?? null);
+        setIsAdmin(checkAdminStatus(session?.user ?? null));
         setLoading(false);
       }
     );
@@ -120,6 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         user,
         loading,
+        isAdmin,
         signUp,
         signIn,
         signInWithGoogle,
